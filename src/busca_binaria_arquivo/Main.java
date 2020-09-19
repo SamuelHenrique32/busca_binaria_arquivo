@@ -1,9 +1,13 @@
 package busca_binaria_arquivo;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -11,7 +15,10 @@ public class Main {
 	private static final int kOPC_CRIAR_ARQUIVO = 1;
 	private static final int kOPC_BUSCA_REGISTRO = 2;
 	private static final int kOPC_SAIR = 3;
-
+	private static final String kFILE_NAME = "registros.txt";
+	
+	private static ArrayList<Integer> lineSizes = new ArrayList();
+	
 	public static void main(String[] args) {
 		
 		int opc;
@@ -27,7 +34,7 @@ public class Main {
 				case kOPC_CRIAR_ARQUIVO:
 
 					try {
-						FileWriter writer = new FileWriter("registros.txt");
+						FileWriter writer = new FileWriter(kFILE_NAME);
 
 						writer.write("1000 Ademar 25 500\n");
 						writer.write("1050 Afonso 27 700\n");
@@ -61,17 +68,46 @@ public class Main {
 				break;
 
 				case kOPC_BUSCA_REGISTRO:
-					System.out.print("\nInforme um registro a ser buscado:");
+
+					FileReader input = null;
+
+					try {
+						input = new FileReader(kFILE_NAME);
+
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+
+					LineNumberReader lineNumberReader = new LineNumberReader(input);
+					
+					try {
+
+						while(lineNumberReader.skip(Long.MAX_VALUE) > 0)
+						{
+	
+						}
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					int nroLinesInFile = lineNumberReader.getLineNumber();
+					
+					System.out.println("\nO arquivo possui " + nroLinesInFile + " linhas");
+
+					System.out.print("\nInforme um registro a ser buscado: ");
 					
 					int nroReg = sc.nextInt();
 
 					try {
-			            RandomAccessFile randomAccessFile = new RandomAccessFile("registros.txt", "rw");
-			 
-			            randomAccessFile.seek(6);
+			            RandomAccessFile randomAccessFile = new RandomAccessFile(kFILE_NAME, "rw");
+			            
+			            countLineSizes(nroLinesInFile, randomAccessFile);
+			            
+			            binarySearch(nroReg, nroLinesInFile, randomAccessFile);
 
-			            System.out.println("\nOffset no Arquivo :" + randomAccessFile.getFilePointer());
-			 
+			            // System.out.println("\nOffset no Arquivo :" + randomAccessFile.getFilePointer());
+			            
 			            randomAccessFile.close();
 			 
 			        } catch (IOException ex) {
@@ -92,11 +128,62 @@ public class Main {
 		}
 	}
 	
-	public static void showMenu(){
+	public static void showMenu() {
 		System.out.println("\nOpcoes:");
 		System.out.println("1- Criar Arquivo");
 		System.out.println("2- Busca de Registro");
 		System.out.println("3- Sair");
 		System.out.print("Opcao escolhida: ");
+	}
+	
+	public static boolean binarySearch(int nroReg, int nroLinesInFile, RandomAccessFile randomAccessFile) {
+
+		int counter = 0, start = 0, end = nroLinesInFile, half;
+        boolean found = false;
+
+        while(start <= end) {
+
+            half = (int)((start + end) / 2);
+            
+            counter++;
+
+            /*if(vetor[half] == buscado) {
+                found = true;
+                break;
+            }
+            else if (vetor[half] < buscado) {
+                start = half + 1;
+            }
+            else { //só pode ser maior
+                end = half - 1;
+            }*/
+        }
+
+        System.out.println("Quantidade de testes realizados: " + counter);
+
+        if(found){
+            System.out.println("Encontrou");
+        }
+        else {
+            System.out.println("Não encontrou");
+        }
+		
+		return false;
+	}
+	
+	public static void countLineSizes(int nroLinesInFile, RandomAccessFile randomAccessFile) throws IOException {
+		
+		randomAccessFile.seek(0);
+
+		for(int i=0 ; i<nroLinesInFile ; i++) {
+			
+			randomAccessFile.readLine();
+			
+			lineSizes.add((int)randomAccessFile.getFilePointer());
+		}
+		
+		/*for(int i=0 ; i<nroLinesInFile ; i++) {
+			System.out.println(lineSizes.get(i));
+		}*/
 	}
 }
