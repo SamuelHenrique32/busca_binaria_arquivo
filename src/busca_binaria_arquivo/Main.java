@@ -3,6 +3,7 @@ package busca_binaria_arquivo;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Scanner;
 
 public class Main {
@@ -60,7 +61,23 @@ public class Main {
 				break;
 
 				case kOPC_BUSCA_REGISTRO:
-										
+					System.out.print("\nInforme um registro a ser buscado:");
+					
+					int nroReg = sc.nextInt();
+
+					try {
+			            RandomAccessFile randomAccessFile = new RandomAccessFile("registros.txt", "rw");
+			 
+			            randomAccessFile.seek(6);
+
+			            System.out.println("\nOffset no Arquivo :" + randomAccessFile.getFilePointer());
+			 
+			            randomAccessFile.close();
+			 
+			        } catch (IOException ex) {
+			            ex.printStackTrace();
+			        }
+
 				break;
 
 				case kOPC_SAIR:
