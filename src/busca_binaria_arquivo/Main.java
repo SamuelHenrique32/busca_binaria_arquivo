@@ -24,37 +24,36 @@ public class Main {
 			switch(opc) {
 			
 				case kOPC_CRIAR_ARQUIVO:
+
 					try {
-						File file = new File("registros.txt");
-					    
-						if (file.createNewFile()) {
-							System.out.println("\nArquivo Criado: " + file.getName());
-							
-							try {
-								FileWriter writer = new FileWriter("filename.txt");
+						FileWriter writer = new FileWriter("registros.txt");
 
-								writer.write("Files in Java might be tricky, but it is fun enough!");
+						writer.write("1000 Ademar 25 500\n");
+						writer.write("1050 Afonso 27 700\n");
+						writer.write("1075 Angela 22 600\n");
+						writer.write("1100 Antônio 28 850\n");
+						writer.write("1300 Carlos 23 750\n");
+						writer.write("1350 Cesar 55 900\n");
+						writer.write("1400 Claudia 25 800\n");
+						writer.write("1440 Cristiano 30 1000\n");
+						writer.write("1480 Darci 20 750\n");
+						writer.write("1600 Diogo 26 600\n");
+						writer.write("1700 Edson 35 500\n");
+						writer.write("1800 Eder 26 550\n");
+						writer.write("1850 Elias 32 650\n");
+						writer.write("1900 Flavio 28 780\n");
+						writer.write("1950 Gerson 39 700\n");
+						writer.write("1975 Geraldo 34 2500\n");
+						writer.write("2000 Helena 42 500\n");
 
-								writer.close();
+						writer.close();
 
-							    System.out.println("\nDados escritos com sucesso no arquivo");
-
-							} catch (IOException e) {
-
-								System.out.println("\nOcorreu um erro na escrita para o arquivo");
-
-							    e.printStackTrace();
-							}
-
-					    }
-						else {
-					        System.out.println("\nArquivo ja existe");
-					    }
+					    System.out.println("\nDados escritos com sucesso no arquivo");
 
 					} catch (IOException e) {
 
-						System.out.println("\nOcorreu um erro na criacao do arquivo");
-						
+						System.out.println("\nOcorreu um erro na escrita para o arquivo");
+
 					    e.printStackTrace();
 					}
 
