@@ -140,7 +140,7 @@ public class Main {
 	
 	public static boolean binarySearch(int nroReg, int nroLinesInFile, RandomAccessFile randomAccessFile) throws IOException {
 
-		int counter = 0, start = 0, end = nroLinesInFile, half, key = -1;
+		int counter = 0, start = 0, end = nroLinesInFile-1, half = -1, key = -1;
 
         boolean found = false;
 
@@ -155,8 +155,13 @@ public class Main {
             
             System.out.println("Procurando na linha " + half);
             
-            randomAccessFile.seek(lineSizes.get(half-1));
-            
+            if(half == 0) {
+            	randomAccessFile.seek(0);
+            }
+            else {
+            	randomAccessFile.seek(lineSizes.get(half-1));	
+            }
+
             currentLine =  randomAccessFile.readLine();
             
             System.out.println("Linha lida: " + currentLine);
@@ -167,22 +172,22 @@ public class Main {
             
             System.out.println("Comparando chave " + nroReg+ " com " + key + "\n");
             
-            /*if(vetor[half] == buscado) {
+            if(key == nroReg) {
                 found = true;
                 break;
             }
-            else if (vetor[half] < buscado) {
+            else if (key < nroReg) {
                 start = half + 1;
             }
-            else { //só pode ser maior
+            else {
                 end = half - 1;
-            }*/
+            }
         }
 
         System.out.println("Quantidade de testes realizados: " + counter);
 
         if(found){
-            System.out.println("Encontrou");
+            System.out.println("Encontrou na linha " + half);
         }
         else {
             System.out.println("Não encontrou");
