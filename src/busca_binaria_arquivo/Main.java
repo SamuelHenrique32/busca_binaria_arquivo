@@ -98,6 +98,8 @@ public class Main {
 					System.out.print("\nInforme um registro a ser buscado: ");
 					
 					int nroReg = sc.nextInt();
+					
+					System.out.println("\nProcurando o registro com chave " + nroReg + "\n");
 
 					try {
 			            RandomAccessFile randomAccessFile = new RandomAccessFile(kFILE_NAME, "rw");
@@ -136,17 +138,35 @@ public class Main {
 		System.out.print("Opcao escolhida: ");
 	}
 	
-	public static boolean binarySearch(int nroReg, int nroLinesInFile, RandomAccessFile randomAccessFile) {
+	public static boolean binarySearch(int nroReg, int nroLinesInFile, RandomAccessFile randomAccessFile) throws IOException {
 
-		int counter = 0, start = 0, end = nroLinesInFile, half;
+		int counter = 0, start = 0, end = nroLinesInFile, half, key = -1;
+
         boolean found = false;
+
+        String currentLine;
+		String[] currentLineSplited;
 
         while(start <= end) {
 
             half = (int)((start + end) / 2);
             
             counter++;
-
+            
+            System.out.println("Procurando na linha " + half);
+            
+            randomAccessFile.seek(lineSizes.get(half-1));
+            
+            currentLine =  randomAccessFile.readLine();
+            
+            System.out.println("Linha lida: " + currentLine);
+            
+            currentLineSplited = currentLine.split(" ");
+            
+            key = Integer.parseInt(currentLineSplited[0]);
+            
+            System.out.println("Comparando chave " + nroReg+ " com " + key + "\n");
+            
             /*if(vetor[half] == buscado) {
                 found = true;
                 break;
