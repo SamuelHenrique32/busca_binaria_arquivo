@@ -119,12 +119,17 @@ public class Main {
 				break;
 
 				case kOPC_SAIR:
+
 					System.out.println("\nAplicacao Encerrada");
+
 					System.exit(0);
+
 				break;
 
 				default:
+
 					System.out.println("\nEscolha uma opcao valida\n");
+
 				break;
 	       }			
 		}
@@ -176,7 +181,7 @@ public class Main {
                 found = true;
                 break;
             }
-            else if (key < nroReg) {
+            else if(key < nroReg) {
                 start = half + 1;
             }
             else {
@@ -206,9 +211,5 @@ public class Main {
 			
 			lineSizes.add((int)randomAccessFile.getFilePointer());
 		}
-		
-		/*for(int i=0 ; i<nroLinesInFile ; i++) {
-			System.out.println(lineSizes.get(i));
-		}*/
 	}
 }
