@@ -152,7 +152,7 @@ public class Main {
         boolean found = false;
 
         String currentLine;
-		String[] currentLineSplited;
+		String[] currentLineSplitted;
 		
 		 char[] charReadLine = new char[kTAMANHO_REGISTRO];
 
@@ -171,7 +171,7 @@ public class Main {
             	randomAccessFile.seek((half*kTAMANHO_REGISTRO)-(kTAMANHO_REGISTRO));	
             }
             
-            for(int i= 0 ; i<kTAMANHO_REGISTRO ; i++) {
+            for(int i=0 ; i<kTAMANHO_REGISTRO ; i++) {
             	charReadLine[i] = (char)randomAccessFile.readByte();
             }
             
@@ -179,14 +179,15 @@ public class Main {
             
             System.out.println("Linha lida: " + currentLine);
             
-            currentLineSplited = currentLine.split(" ");
+            currentLineSplitted = currentLine.split(" ");
             
-            key = Integer.parseInt(currentLineSplited[0]);
+            key = Integer.parseInt(currentLineSplitted[0]);
             
             System.out.println("Comparando chave " + nroReg+ " com " + key + "\n");
             
             if(key == nroReg) {
                 found = true;
+
                 break;
             }
             else if(key < nroReg) {
@@ -203,7 +204,7 @@ public class Main {
             System.out.println("Encontrou na linha " + half);
         }
         else {
-            System.out.println("Não encontrou");
+            System.out.println("Nao encontrou");
         }
 		
 		return false;
