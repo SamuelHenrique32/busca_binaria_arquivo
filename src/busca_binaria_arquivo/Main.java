@@ -1,13 +1,6 @@
 package busca_binaria_arquivo;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
@@ -15,13 +8,15 @@ public class Main {
 	private static final int kOPC_CRIAR_ARQUIVO = 1;
 	private static final int kOPC_BUSCA_REGISTRO = 2;
 	private static final int kOPC_SAIR = 3;
+	private static final int kTAMANHO_REGISTRO = 50;
 	private static final String kFILE_NAME = "registros.txt";
+	private static final String kFILE_NAME_OUTPUT = "registros_binario";
 	
-	private static ArrayList<Integer> lineSizes = new ArrayList();
-	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
-		int opc;
+		int opc, linesQuantity = 0, bytesQtd = 0;
+		boolean fileCreated = false;
+
 		Scanner sc = new Scanner(System.in);
 
 		while(true) {
@@ -32,68 +27,29 @@ public class Main {
 			switch(opc) {
 			
 				case kOPC_CRIAR_ARQUIVO:
+					
+					linesQuantity = createFile();
 
-					try {
-						FileWriter writer = new FileWriter(kFILE_NAME);
-
-						writer.write("1000 Ademar 25 500\n");
-						writer.write("1050 Afonso 27 700\n");
-						writer.write("1075 Angela 22 600\n");
-						writer.write("1100 Antônio 28 850\n");
-						writer.write("1300 Carlos 23 750\n");
-						writer.write("1350 Cesar 55 900\n");
-						writer.write("1400 Claudia 25 800\n");
-						writer.write("1440 Cristiano 30 1000\n");
-						writer.write("1480 Darci 20 750\n");
-						writer.write("1600 Diogo 26 600\n");
-						writer.write("1700 Edson 35 500\n");
-						writer.write("1800 Eder 26 550\n");
-						writer.write("1850 Elias 32 650\n");
-						writer.write("1900 Flavio 28 780\n");
-						writer.write("1950 Gerson 39 700\n");
-						writer.write("1975 Geraldo 34 2500\n");
-						writer.write("2000 Helena 42 500\n");
-
-						writer.close();
-
-					    System.out.println("\nDados escritos com sucesso no arquivo");
-
-					} catch (IOException e) {
-
-						System.out.println("\nOcorreu um erro na escrita para o arquivo");
-
-					    e.printStackTrace();
-					}
+					bytesQtd = (linesQuantity*kTAMANHO_REGISTRO);
+					
+					System.out.println("\nQuantidade de bytes no arquivo binario criado: " + bytesQtd);
+					
+					fileCreated = true;
 
 				break;
 
 				case kOPC_BUSCA_REGISTRO:
-
-					FileReader input = null;
-
-					try {
-						input = new FileReader(kFILE_NAME);
-
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					}
-
-					LineNumberReader lineNumberReader = new LineNumberReader(input);
 					
-					try {
+					if(!fileCreated) {
 
-						while(lineNumberReader.skip(Long.MAX_VALUE) > 0)
-						{
-	
-						}
+						linesQuantity = createFile();
 
-					} catch (IOException e) {
-						e.printStackTrace();
+						bytesQtd = (linesQuantity*kTAMANHO_REGISTRO);
+						
+						System.out.println("\nQuantidade de bytes no arquivo binario criado: " + bytesQtd);
+						
+						fileCreated = true;
 					}
-
-					int nroLinesInFile = lineNumberReader.getLineNumber();
-					
-					System.out.println("\nO arquivo possui " + nroLinesInFile + " linhas");
 
 					System.out.print("\nInforme um registro a ser buscado: ");
 					
@@ -102,14 +58,12 @@ public class Main {
 					System.out.println("\nProcurando o registro com chave " + nroReg + "\n");
 
 					try {
-			            RandomAccessFile randomAccessFile = new RandomAccessFile(kFILE_NAME, "rw");
+			            RandomAccessFile randomAccessFile = new RandomAccessFile(kFILE_NAME_OUTPUT, "rw");
 			            
-			            countLineSizes(nroLinesInFile, randomAccessFile);
+			            System.out.println("Tamanho do arquivo binario para leitura: " + randomAccessFile.length() + "\n");
 			            
-			            binarySearch(nroReg, nroLinesInFile, randomAccessFile);
+			            binarySearch(nroReg, linesQuantity, randomAccessFile);
 
-			            // System.out.println("\nOffset no Arquivo :" + randomAccessFile.getFilePointer());
-			            
 			            randomAccessFile.close();
 			 
 			        } catch (IOException ex) {
@@ -121,6 +75,8 @@ public class Main {
 				case kOPC_SAIR:
 
 					System.out.println("\nAplicacao Encerrada");
+					
+					sc.close();
 
 					System.exit(0);
 
@@ -134,6 +90,52 @@ public class Main {
 	       }			
 		}
 	}
+
+	private static int createFile() throws IOException {
+
+		int linesQuantity = 0;
+		String line;
+		
+		File file = new File(kFILE_NAME);
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		OutputStream outputStream = new FileOutputStream(kFILE_NAME_OUTPUT);
+
+		System.out.println("\nO arquivo " + kFILE_NAME + " sera lido para gerar o arquivo binario");
+
+		try {
+
+			while((line = br.readLine()) != null) {
+				
+				linesQuantity++;
+				
+				StringBuilder strBuilder = new StringBuilder(line);
+
+				// Complete line length to match kTAMANHO_REGISTRO
+				for(int i=line.length() ; i<kTAMANHO_REGISTRO ; i++) {
+					strBuilder.append(" ");
+				}
+				
+				outputStream.write(strBuilder.toString().getBytes());
+				
+				outputStream.flush();
+			}
+			
+		} catch (FileNotFoundException e1) {
+
+			System.out.println("Nao foi possivel abrir o arquivo para leitura\n");
+
+			System.exit(0);
+
+		}
+		
+		br.close();
+		
+		outputStream.close();
+		
+		System.out.println("\nDados escritos com sucesso no arquivo binario");
+
+		return linesQuantity;
+	}
 	
 	public static void showMenu() {
 		System.out.println("\nOpcoes:");
@@ -145,12 +147,14 @@ public class Main {
 	
 	public static boolean binarySearch(int nroReg, int nroLinesInFile, RandomAccessFile randomAccessFile) throws IOException {
 
-		int counter = 0, start = 0, end = nroLinesInFile-1, half = -1, key = -1;
+		int counter = 0, start = 1, end = nroLinesInFile, half = -1, key = -1;
 
         boolean found = false;
 
         String currentLine;
 		String[] currentLineSplited;
+		
+		 char[] charReadLine = new char[kTAMANHO_REGISTRO];
 
         while(start <= end) {
 
@@ -160,14 +164,18 @@ public class Main {
             
             System.out.println("Procurando na linha " + half);
             
-            if(half == 0) {
+            if(half == 1) {
             	randomAccessFile.seek(0);
             }
             else {
-            	randomAccessFile.seek(lineSizes.get(half-1));	
+            	randomAccessFile.seek((half*kTAMANHO_REGISTRO)-(kTAMANHO_REGISTRO));	
             }
-
-            currentLine =  randomAccessFile.readLine();
+            
+            for(int i= 0 ; i<kTAMANHO_REGISTRO ; i++) {
+            	charReadLine[i] = (char)randomAccessFile.readByte();
+            }
+            
+            currentLine = new String(charReadLine);
             
             System.out.println("Linha lida: " + currentLine);
             
@@ -199,17 +207,5 @@ public class Main {
         }
 		
 		return false;
-	}
-	
-	public static void countLineSizes(int nroLinesInFile, RandomAccessFile randomAccessFile) throws IOException {
-		
-		randomAccessFile.seek(0);
-
-		for(int i=0 ; i<nroLinesInFile ; i++) {
-			
-			randomAccessFile.readLine();
-			
-			lineSizes.add((int)randomAccessFile.getFilePointer());
-		}
 	}
 }
